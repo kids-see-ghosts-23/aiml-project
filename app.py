@@ -443,16 +443,16 @@ with tab3:
             
             for change in changes_detected:
                 st.markdown(f"""
-                <div style="padding: 15px; margin: 10px 0; background-color: #f8f9fa; border-left: 4px solid {change['color']}; border-radius: 5px;">
+                <div style="padding: 15px; margin: 10px 0; background-color: #1e1e1e; border-left: 4px solid {change['color']}; border-radius: 5px;">
                     <div style="display: flex; align-items: center; margin-bottom: 8px;">
                         <div style="width: 20px; height: 20px; background-color: {change['color']}; border-radius: 3px; margin-right: 10px;"></div>
-                        <strong style="font-size: 18px;">{change['name']}</strong>
+                        <strong style="font-size: 18px; color: #ffffff;">{change['name']}</strong>
                         <span style="margin-left: auto; font-size: 24px;">{change['icon']}</span>
                     </div>
-                    <p style="margin: 5px 0; color: #555;">
+                    <p style="margin: 5px 0; color: #b0b0b0;">
                         <strong>{change['type'].capitalize()}</strong> by <strong style="color: {'#27ae60' if change['delta'] > 0 else '#e74c3c'};">{abs(change['delta']):.2f}%</strong>
                     </p>
-                    <p style="margin: 5px 0; color: #777; font-size: 14px;">
+                    <p style="margin: 5px 0; color: #888888; font-size: 14px;">
                         Before: {change['before']:.2f}% → After: {change['after']:.2f}%
                     </p>
                 </div>
@@ -465,32 +465,6 @@ with tab3:
         - Total area changed: **{change_percentage:.1f}%**
         - Patches modified: **{int(changed_pixels):,}** out of **{int(total_pixels):,}**
         - Patches unchanged: **{int(total_pixels - changed_pixels):,}** ({100 - change_percentage:.1f}%)
-        """)
-        
-        st.markdown("---")
-        st.markdown("### Terrain Naming Logic")
-        st.info("""
-        **How terrain names are assigned:**
-        
-        The AI performs **independent clustering** on each image separately. This preserves the natural terrain characteristics of each location.
-        
-        **Key points:**
-        
-        1. **Independent Analysis**: Before and After images are clustered separately, so terrain IDs maintain consistent meaning within each image
-        2. **Spectral Characteristics**: NDVI, brightness, texture patterns in 4-channel satellite data (RGB + NIR)
-        3. **Manual Mapping**: KMeans assigns arbitrary IDs (0, 1, 2...) - we manually map them to terrain labels via the `TERRAIN_NAMES` dictionary
-        4. **Color Consistency**: The `TERRAIN_COLORS` array defines hex colors for each cluster ID across all visualizations
-        
-        **Why independent clustering?**
-        - Different locations have different terrain compositions
-        - Bengaluru (urban) vs Tokyo (coastal) have vastly different spectral signatures
-        - Independent clustering ensures Water in Tokyo actually represents water, not misclassified as another terrain
-        
-        **To customize:**
-        - Run analysis to see terrain maps
-        - Identify which cluster ID represents which terrain
-        - Edit both `TERRAIN_NAMES` and `TERRAIN_COLORS` dictionaries in app.py
-        - Example: If cluster 1 is green and shows forests → set TERRAIN_NAMES[1] = "Vegetation"
         """)
     else:
         st.warning("Run AI Analysis in Tab 2 first to see statistics")
