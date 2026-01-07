@@ -409,6 +409,65 @@ with tab3:
         st.pyplot(fig4)
         
         st.markdown("---")
+        st.markdown("### Change Summary")
+        
+        st.markdown("#### Key Changes Detected:")
+        
+        changes_detected = []
+        for i in range(n_clusters):
+            if i < len(pct_before) and i < len(pct_after):
+                delta = pct_after_full[i] - pct_before_full[i]
+                if abs(delta) > 0.5:
+                    terrain_name = TERRAIN_NAMES.get(i, f"Terrain {i}")
+                    color = TERRAIN_COLORS[i]
+                    
+                    if delta > 0:
+                        change_type = "increased"
+                        icon = "📈"
+                    else:
+                        change_type = "decreased"
+                        icon = "📉"
+                    
+                    changes_detected.append({
+                        'name': terrain_name,
+                        'color': color,
+                        'delta': delta,
+                        'type': change_type,
+                        'icon': icon,
+                        'before': pct_before_full[i],
+                        'after': pct_after_full[i]
+                    })
+        
+        if changes_detected:
+            changes_detected.sort(key=lambda x: abs(x['delta']), reverse=True)
+            
+            for change in changes_detected:
+                st.markdown(f"""
+                <div style="padding: 15px; margin: 10px 0; background-color: #f8f9fa; border-left: 4px solid {change['color']}; border-radius: 5px;">
+                    <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                        <div style="width: 20px; height: 20px; background-color: {change['color']}; border-radius: 3px; margin-right: 10px;"></div>
+                        <strong style="font-size: 18px;">{change['name']}</strong>
+                        <span style="margin-left: auto; font-size: 24px;">{change['icon']}</span>
+                    </div>
+                    <p style="margin: 5px 0; color: #555;">
+                        <strong>{change['type'].capitalize()}</strong> by <strong style="color: {'#27ae60' if change['delta'] > 0 else '#e74c3c'};">{abs(change['delta']):.2f}%</strong>
+                    </p>
+                    <p style="margin: 5px 0; color: #777; font-size: 14px;">
+                        Before: {change['before']:.2f}% → After: {change['after']:.2f}%
+                    </p>
+                </div>
+                """, unsafe_allow_html=True)
+        else:
+            st.info("No significant changes detected (threshold: 0.5%)")
+        
+        st.markdown(f"""
+        **Overall Change Statistics:**
+        - Total area changed: **{change_percentage:.1f}%**
+        - Patches modified: **{int(changed_pixels):,}** out of **{int(total_pixels):,}**
+        - Patches unchanged: **{int(total_pixels - changed_pixels):,}** ({100 - change_percentage:.1f}%)
+        """)
+        
+        st.markdown("---")
         st.markdown("### Terrain Naming Logic")
         st.info("""
         **How terrain names are assigned:**
