@@ -1,0 +1,30 @@
+# Data files
+*.tif
+*.npy
+*.pth
+
+# Patch directories
+temp_location_patches/
+patches_before/
+patches_after/
+
+# Archives
+train_patches.zip
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.venv/
+venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
